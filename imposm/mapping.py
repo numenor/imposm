@@ -215,7 +215,8 @@ class TagMapper(object):
                 self._mapping_for_tags(self.polygon_mappings, tags))
 
     def for_relations(self, tags):
-        return self._mapping_for_tags(self.polygon_mappings, tags)
+        return (self._mapping_for_tags(self.line_mappings, tags) +
+                self._mapping_for_tags(self.polygon_mappings, tags))
 
     def _tag_filter(self, filter_tags):
         def filter(tags):
@@ -252,25 +253,27 @@ class TagMapper(object):
             tags.setdefault(k, set()).update(v)
         for k, v in self.polygon_tags.iteritems():
             tags.setdefault(k, set()).update(v)
-        tags['type'] = set(['multipolygon', 'boundary', 'land_area'])  # for type=multipolygon
-        expected_tags = set(['type', 'name'])
-        _rel_filter = self._tag_filter(tags)
-        def rel_filter(tags):
-            # we only support mulipolygon relations, skip all other
-            # a lot of the admin boundary/land_area relations are not type=multipolygon
-            if tags.get('type') not in ('multipolygon', 'boundary', 'land_area'):
-                tags.clear()
-                return
-            tag_count = len(tags)
-            _rel_filter(tags)
-            if len(tags) < tag_count:
-                # we removed tags...
-                if not set(tags).difference(expected_tags):
-                    # but no tags except name and type are left
-                    # remove all, otherwise tags from longest
-                    # way/ring would be used during MP building
-                    tags.clear()
-        return rel_filter
+        return self._tag_filter(tags)
+        
+        #tags['type'] = set(['multipolygon', 'boundary', 'land_area'])  # for type=multipolygon
+        #expected_tags = set(['type', 'name'])
+        #_rel_filter = self._tag_filter(tags)
+        #def rel_filter(tags):
+        #    # we only support mulipolygon relations, skip all other
+        #    # a lot of the admin boundary/land_area relations are not type=multipolygon
+        #    if tags.get('type') not in ('multipolygon', 'boundary', 'land_area'):
+        #        tags.clear()
+        #        return
+        #    tag_count = len(tags)
+        #    _rel_filter(tags)
+        #    if len(tags) < tag_count:
+        #        # we removed tags...
+        #        if not set(tags).difference(expected_tags):
+        #            # but no tags except name and type are left
+        #            # remove all, otherwise tags from longest
+        #            # way/ring would be used during MP building
+        #            tags.clear()
+        #return rel_filter
 
     def _mapping_for_tags(self, tag_map, tags):
         result = []
@@ -317,12 +320,13 @@ class Points(Mapping):
 class LineStrings(Mapping):
     """
     Table class for line string features.
-
-    :PostGIS datatype: LINESTRING
+    
+    :PostGIS datatype: GEOMETRY (LINESTRING does not support multi-linestrings)
+    //:PostGIS datatype: LINESTRING
     """
     table = LineStringTable
     geom_builder = imposm.geom.LineStringBuilder()
-    geom_type = 'LINESTRING'
+    geom_type = 'GEOMETRY'
 
 class Polygons(Mapping):
     """
