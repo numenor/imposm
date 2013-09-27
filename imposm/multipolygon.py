@@ -83,12 +83,12 @@ class RelationBuilderBase(object):
         linestring_rings = []
         
         for ring in (Ring(w) for w in ways):
-            if ring.is_closed():
-                ring.geom = self.polygon_builder.build_checked_geom(ring, validate=self.validate_rings)
-                rings.append(ring)
-            elif 'route' in self.relation.tags:
+            if 'route' in self.relation.tags:
                 ring.geom = self.linestring_builder.build_geom(ring)
                 linestring_rings.append(ring)
+            elif ring.is_closed():
+                ring.geom = self.polygon_builder.build_checked_geom(ring, validate=self.validate_rings)
+                rings.append(ring)
             else:
                 incomplete_rings.append(ring)
         
