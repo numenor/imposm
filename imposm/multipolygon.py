@@ -80,19 +80,23 @@ class RelationBuilderBase(object):
     def build_rings(self, ways):
         rings = []
         incomplete_rings = []
+        linestring_rings = []
         
         for ring in (Ring(w) for w in ways):
             if ring.is_closed():
                 ring.geom = self.polygon_builder.build_checked_geom(ring, validate=self.validate_rings)
                 rings.append(ring)
+            elif 'route' in self.relation.tags:
+                ring.geom = self.linestring_builder.build_geom(ring)
+                linestring_rings.append(ring)
             else:
                 incomplete_rings.append(ring)
         
         merged_rings = self.build_ring_from_incomplete(incomplete_rings)
-        if len(rings) + len(merged_rings) == 0:
+        if len(rings) + len(merged_rings) + len(linestring_rings) == 0:
             raise IncompletePolygonError('linestrings from relation %s have no rings' % (self.relation.osm_id, ))
         
-        return rings + merged_rings
+        return rings + merged_rings + linestring_rings
         
     def build_ring_from_incomplete(self, incomplete_rings):
         
