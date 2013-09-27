@@ -1,3 +1,12 @@
+This fork extends the original `imposm` by
+
+* possibility to import route relations
+
+The changes are inspired by those published by `michalmacki <https://bitbucket.org/michalmacki/imposm-routes/>`_.
+As those seem to be based on an outdated imposm, they are contained in an hg
+repository instead of git, and I saw the need for some slight changes, I
+replicated several of his changes.
+
 Imposm is an importer for OpenStreetMap data. It reads XML and PBF files and
 can import the data into PostgreSQL/PostGIS databases.
 

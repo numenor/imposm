@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+unreleased
+~~~~~~~~~~
+- add possibility to import route relations
+
 2.5.0 2012-12-06
 ~~~~~~~~~~~~~~~~
 
