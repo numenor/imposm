@@ -4,6 +4,8 @@ Changelog
 unreleased
 ~~~~~~~~~~
 - add possibility to import route relations
+- add possibility to use ":" and similar characters in tag/column
+  names when generalizing such tables
 
 2.5.0 2012-12-06
 ~~~~~~~~~~~~~~~~
