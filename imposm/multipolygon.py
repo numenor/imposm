@@ -230,8 +230,8 @@ class ContainsRelationBuilder(RelationBuilderBase):
         """
         islines = ('route' in self.relation.tags)
         #islines = all(ring.geom.geom_type in ('LineString', 'MultiLineString') for ring in rings)
-        import sys
-        sys.printf("*** ContainsRelationBuilder.build_relation_geometry: Relation %r, found feature types: %r" % ( self.relation.tags, [ring.geom.geom_type in ('LineString', 'MultiLineString') for ring in rings] ) )
+        #import sys
+        #sys.stderr.write("*** ContainsRelationBuilder.build_relation_geometry: Relation %r, found feature types: %r\n" % ( self.relation.tags, [ring.geom.geom_type for ring in rings] ) )
         if islines:
             self.relation.geom = shapely.ops.linemerge([ring.geom for ring in rings])
             for ring in rings:

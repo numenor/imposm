@@ -421,7 +421,7 @@ class PostGISUnionView(object):
 
         for mapping in self.mapping.mappings:
             field_str = ', '.join(self._mapping_fields(mapping))
-            selects.append("""SELECT %s osm_id, geometry, "%s",
+            selects.append("""SELECT %s osm_id, geometry, %s,
                 '%s' as class from "%s" """ % (
                 serial_column, field_str,
                 mapping.classname or mapping.name, self.db.to_tablename(mapping.name)))
@@ -484,7 +484,7 @@ class PostGISGeneralizedTable(object):
         return stmt
 
     def _stmt(self):
-        fields = ', '.join(["'"+n+'"' for n, t in self.mapping.fields])
+        fields = ', '.join(['"'+n+'"' for n, t in self.mapping.fields])
         if fields:
             fields += ','
 
