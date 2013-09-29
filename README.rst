@@ -1,6 +1,7 @@
 This fork extends the original `imposm` by
 
 * possibility to import route relations
+* allow ":" and similar characters in tag names when creating generalized tables
 
 The changes are inspired by those published by `michalmacki <https://bitbucket.org/michalmacki/imposm-routes/>`_.
 As those seem to be based on an outdated imposm, they are contained in an hg
