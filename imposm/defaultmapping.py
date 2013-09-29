@@ -250,6 +250,7 @@ routes = LineStrings(
     name = 'routes',
     fields = (
         ('name', String()),
+        ('network', String()),
         ('colour', String()),
         ('color', String()),
         ('ref', String()),
