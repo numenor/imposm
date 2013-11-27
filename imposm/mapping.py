@@ -253,6 +253,8 @@ class TagMapper(object):
             tags.setdefault(k, set()).update(v)
         for k, v in self.polygon_tags.iteritems():
             tags.setdefault(k, set()).update(v)
+        for k, v in {'type': set(['multipolygon', 'boundary', 'land_area'])}.iteritems():
+            tags.setdefault(k, set()).update(v)
         return self._tag_filter(tags)
         
         #tags['type'] = set(['multipolygon', 'boundary', 'land_area'])  # for type=multipolygon
