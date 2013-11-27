@@ -33,6 +33,7 @@ __all__ = [
     'Direction',
     'OneOfInt',
     'Integer',
+    'Float',
     'WayZOrder',
     'Bool',
     'GeneralizedTable',
@@ -505,6 +506,10 @@ class String(FieldType):
     """
     column_type = "VARCHAR(255)"
 
+    def filter(self, val, osm_elem):
+        if self.value(val, osm_elem) in (None, ''):
+            raise DropElem
+
 class Name(String):
     """
     Field for name values.
@@ -563,6 +568,7 @@ class Bool(FieldType):
     """
     Field for boolean values.
     Converts false, no, 0 to False and true, yes, 1 to True.
+    filters away elements which evaluate to True/1.
 
     :PostgreSQL datatype: SMALLINT
     """
@@ -586,6 +592,36 @@ class Bool(FieldType):
 
     def filter(self, val, osm_elem):
         if self.value(val, osm_elem):
+            raise DropElem
+
+class BoolTrue(FieldType):
+    """
+    Field for boolean values.
+    Converts false, no, 0 to False and true, yes, 1 to True.
+    filters away elements which evaluate to False/0.
+
+    :PostgreSQL datatype: SMALLINT
+    """
+    # there was a reason this is not BOOL
+    # something didn't supported it, cascadenik? don't remember
+    column_type = "SMALLINT"
+
+    aliases = {
+        True: set(['false', 'no', '0', 'undefined']),
+        False: set(['true', 'yes', '1', 'undefined']),
+    }
+
+    def __init__(self, default=True, neg_aliases=None):
+        self.default = default
+        self.neg_aliases = neg_aliases or self.aliases[default]
+
+    def value(self, val, osm_elem):
+        if val is None or val.strip().lower() in self.neg_aliases:
+            return 0  # not self.default
+        return 1  # self.default
+
+    def filter(self, val, osm_elem):
+        if not self.value(val, osm_elem):
             raise DropElem
 
 class Direction(FieldType):
@@ -675,6 +711,29 @@ class Integer(FieldType):
             return int(value)
         except:
             return None
+
+    def filter(self, val, osm_elem):
+        if self.value(val, osm_elem) in (None, 0):
+            raise DropElem
+
+class Float(FieldType):
+    """
+    Field type for float (aka double precision) values.
+    Converts values to floats, defaults to ``NULL``.
+
+    :PostgreSQL datatype: DOUBLE PRECISION
+    """
+    column_type = "DOUBLE PRECISION"
+
+    def value(self, value, osm_elem):
+        try:
+            return float(value)
+        except:
+            return None
+
+    def filter(self, val, osm_elem):
+        if self.value(val, osm_elem) in (None, 0.0):
+            raise DropElem
 
 class ZOrder(FieldType):
     """
