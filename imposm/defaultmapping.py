@@ -246,6 +246,23 @@ aeroways = LineStrings(
     )}
 )
 
+routes = LineStrings(
+    name = 'routes',
+    fields = (
+        ('name', String()),
+        ('network', String()),
+        ('colour', String()),
+        ('color', String()),
+        ('ref', String()),
+        ('operator', String()),
+        ('osmc:symbol', String()),
+    ),
+    mapping = {
+        'route': (
+            '__any__',
+    )}
+)
+
 transport_areas = Polygons(
     name = 'transport_areas',
     mapping = {

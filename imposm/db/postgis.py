@@ -484,7 +484,7 @@ class PostGISGeneralizedTable(object):
         return stmt
 
     def _stmt(self):
-        fields = ', '.join([n for n, t in self.mapping.fields])
+        fields = ', '.join(['"'+n+'"' for n, t in self.mapping.fields])
         if fields:
             fields += ','
 
