@@ -422,7 +422,7 @@ class PostGISUnionView(object):
         for mapping in self.mapping.mappings:
             field_str = ', '.join(self._mapping_fields(mapping))
             selects.append("""SELECT %s osm_id, geometry, %s,
-                '%s' as class from "%s" """ % (
+                '%s' as view_origin from "%s" """ % (
                 serial_column, field_str,
                 mapping.classname or mapping.name, self.db.to_tablename(mapping.name)))
 
